@@ -3,3 +3,4 @@ obj
 packages
 *.user
 *.pfx
+/.vs/Stefmde.Tools/v15

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Stefmde.File.Hash.Models;
 using Stefmde.File.Hash.Worker;
 
-namespace Stefmde.File.Hash
+namespace Stefmde.Tools.File.Hash
 {
 	public static class Hash
 	{

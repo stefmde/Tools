@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F74C1AD9-7CA3-4237-8CD6-C96F45ACC4DE}</ProjectGuid>
+    <ProjectGuid>{848E45A5-0A84-4044-B4FB-10B0C7083C4D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Stefmde.Tools.File.Hash</RootNamespace>
-    <AssemblyName>Stefmde.Tools.File.Hash</AssemblyName>
+    <RootNamespace>Stefmde.Tools.File.MovieInfoReader</RootNamespace>
+    <AssemblyName>Stefmde.Tools.File.MovieInfoReader</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,11 +43,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hash.cs" />
-    <Compile Include="Models\Accuracy.cs" />
-    <Compile Include="Models\HashResult.cs" />
+    <Compile Include="Helper\JsonParser.cs" />
+    <Compile Include="Models\AudioStream.cs" />
+    <Compile Include="Models\BaseStream.cs" />
+    <Compile Include="Models\Chapter.cs" />
+    <Compile Include="Models\Codec.cs" />
+    <Compile Include="Models\Disposition.cs" />
+    <Compile Include="Models\Enums\StreamType.cs" />
+    <Compile Include="Models\Enums\TwoDimensionalOrientation.cs" />
+    <Compile Include="Models\MovieInfo.cs" />
+    <Compile Include="Models\Ratio.cs" />
+    <Compile Include="Models\Rational.cs" />
+    <Compile Include="Models\SubtitleStream.cs" />
+    <Compile Include="Models\Tag.cs" />
+    <Compile Include="Models\TagLanguage.cs" />
+    <Compile Include="Models\VideoStream.cs" />
+    <Compile Include="MovieInfoReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Worker\Helper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

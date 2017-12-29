@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stefmde.Tools.DotNetDetector", "Stefmde.Tools.DotNetDetector\Stefmde.Tools.DotNetDetector.csproj", "{EE13423E-1257-474E-AA49-B9E7B54116F5}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "File", "File", "{7FF63230-07CB-481A-B9EA-4B90402EA8B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stefmde.Tools.File.Hash", "Stefmde.Tools.File.Hash\Stefmde.Tools.File.Hash.csproj", "{F74C1AD9-7CA3-4237-8CD6-C96F45ACC4DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stefmde.Tools.File.MovieInfoReader", "Stefmde.Tools.File.MovieInfoReader\Stefmde.Tools.File.MovieInfoReader.csproj", "{848E45A5-0A84-4044-B4FB-10B0C7083C4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,22 @@ Global
 		{F74C1AD9-7CA3-4237-8CD6-C96F45ACC4DE}.Release|x64.Build.0 = Release|Any CPU
 		{F74C1AD9-7CA3-4237-8CD6-C96F45ACC4DE}.Release|x86.ActiveCfg = Release|Any CPU
 		{F74C1AD9-7CA3-4237-8CD6-C96F45ACC4DE}.Release|x86.Build.0 = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|ARM.Build.0 = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|x64.Build.0 = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Debug|x86.Build.0 = Debug|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|ARM.Build.0 = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|x64.ActiveCfg = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|x64.Build.0 = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +124,7 @@ Global
 		{B41ED6BE-B2B6-4DD8-9108-981D3D66875D} = {87E7D9DB-AA43-446F-B858-61866229F274}
 		{7CEB6F8F-07B3-47E0-910E-AC68656D25A8} = {87E7D9DB-AA43-446F-B858-61866229F274}
 		{F74C1AD9-7CA3-4237-8CD6-C96F45ACC4DE} = {7FF63230-07CB-481A-B9EA-4B90402EA8B1}
+		{848E45A5-0A84-4044-B4FB-10B0C7083C4D} = {7FF63230-07CB-481A-B9EA-4B90402EA8B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2C9968F-4BC9-4173-AAE6-BCBE28F9E8E6}
