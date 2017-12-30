@@ -23,11 +23,12 @@
 // SOFTWARE.
 // 
 
+using System.Collections.Generic;
+
 namespace Stefmde.Tools.File.MovieInfoReader.Models
 {
-	public class Tag
-	{
-		public TagLanguage Tags { get; internal set; }
-		public TagLanguage TagsEng { get; internal set; }
-	}
+	//public class Tag
+	//{
+	//	public Dictionary<string, string> Tags { get; internal set; }
+	//}
 }

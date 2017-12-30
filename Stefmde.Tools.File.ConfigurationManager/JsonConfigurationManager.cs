@@ -23,17 +23,17 @@ namespace Stefmde.Tools.File.ConfigurationManager
 				if (System.IO.File.GetAttributes(path).HasFlag(FileAttributes.Directory))
 				{
 					// Directory given
-					fullFileName = Path.Combine(path, nameof(T) + ".json");
+					fullFileName = Path.Combine(path, typeof(T).Name + ".json");
 				}
 
 				string json = System.IO.File.ReadAllText(fullFileName);
-				T data = JsonConvert.DeserializeObject<T>(json);
-				System.IO.File.WriteAllText(fullFileName, json);
+				T data = JsonConvert.DeserializeObject<T> (json);
+
 				return data;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("ERROR: " + nameof(JsonConfigurationManager<T>) + " whil trying to serialide/write configuration:");
+				Console.WriteLine("ERROR: " + nameof(JsonConfigurationManager<T>) + " while trying to serialide/write configuration:");
 				Console.WriteLine(ex.Message);
 				Console.WriteLine(ex.Source);
 				Console.WriteLine(ex.StackTrace);
@@ -56,7 +56,7 @@ namespace Stefmde.Tools.File.ConfigurationManager
 				if (System.IO.File.GetAttributes(path).HasFlag(FileAttributes.Directory))
 				{
 					// Directory given
-					fullFileName = Path.Combine(path, nameof(T) + ".json");
+					fullFileName = Path.Combine(path, typeof(T).Name + ".json");
 				}
 
 				string json = JsonConvert.SerializeObject(data, Formatting.Indented);

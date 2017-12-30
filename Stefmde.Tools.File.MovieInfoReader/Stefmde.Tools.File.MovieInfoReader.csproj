@@ -43,11 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\JTokenExtensions.cs" />
     <Compile Include="Helper\JsonParser.cs" />
+    <Compile Include="Models\AttachmentStream.cs" />
     <Compile Include="Models\AudioStream.cs" />
     <Compile Include="Models\BaseStream.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Codec.cs" />
+    <Compile Include="Models\CoreModels\CoreChapter.cs" />
+    <Compile Include="Models\CoreModels\CoreRoot.cs" />
+    <Compile Include="Models\CoreModels\CoreStream.cs" />
+    <Compile Include="Models\DataStream.cs" />
     <Compile Include="Models\Disposition.cs" />
     <Compile Include="Models\Enums\StreamType.cs" />
     <Compile Include="Models\Enums\TwoDimensionalOrientation.cs" />

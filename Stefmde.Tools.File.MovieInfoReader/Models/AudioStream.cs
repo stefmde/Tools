@@ -36,7 +36,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 			StartPts = baseStream.StartPts;
 			StartTime = baseStream.StartTime;
 			Disposition = baseStream.Disposition;
-			Tag = baseStream.Tag;
+			Tags = baseStream.Tags;
 			Language = baseStream.Language;
 			Title = baseStream.Title;
 		}
@@ -46,6 +46,6 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 		public string ChannelLayout { get; internal set; }
 		public string SampleFmt { get; internal set; }
 		public int SampleRate { get; internal set; }
-		public int BitsPerRawSample { get; internal set; }
+		public int BitsPerSample { get; internal set; }
 	}
 }

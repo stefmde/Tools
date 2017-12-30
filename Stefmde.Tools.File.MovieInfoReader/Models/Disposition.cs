@@ -27,7 +27,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 {
 	public class Disposition
 	{
-		public int Defaut { get; internal set; }
+		public int Default { get; internal set; }
 		public int Dub { get; internal set; }
 		public int Original { get; internal set; }
 		public int Comment { get; internal set; }

@@ -33,6 +33,8 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models.Enums
 		None,
 		Video,
 		Audio,
-		Subtitle
+		Subtitle,
+		Data,
+		Attachment
 	}
 }

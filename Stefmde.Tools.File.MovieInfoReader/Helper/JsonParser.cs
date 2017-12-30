@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using Stefmde.Tools.File.MovieInfoReader.Extensions;
 using Stefmde.Tools.File.MovieInfoReader.Models;
 using Stefmde.Tools.File.MovieInfoReader.Models.Enums;
 
@@ -44,76 +45,110 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 			MovieInfo movieInfo = new MovieInfo();
 			JObject movieObject = JObject.Parse(json);
 
-			foreach (JToken token in movieObject["streams"])
+			if (movieObject["streams"] == null)
 			{
-				if (token["codec_type"].ToString().Equals("video", StringComparison.OrdinalIgnoreCase))
+				Console.WriteLine("ERROR: No streams found because collection is null");
+			}
+			else
+			{
+				foreach (JToken token in movieObject["streams"])
 				{
-					VideoStream stream = ParseVideoStream(token);
-					movieInfo.VideoStreams.Add(stream);
-				}
-				else if (token["codec_type"].Value<string>().Equals("audio", StringComparison.OrdinalIgnoreCase))
-				{
-					AudioStream stream = ParseAudioStream(token);
-					movieInfo.AudioStreams.Add(stream);
-				}
-				else if (token["codec_type"].Value<string>().Equals("subtitle", StringComparison.OrdinalIgnoreCase))
-				{
-					SubtitleStream stream = ParseSubtitleStream(token);
-					movieInfo.SubtitleStreams.Add(stream);
-				}
-				else
-				{
-					Console.WriteLine("ERROR: Unknown StreamType found: " + token["codec_type"].Value<string>());
+					try
+					{
+						if (token["codec_type"] == null)
+						{
+							Console.WriteLine("ERROR: Stream skipped because its null");
+							continue;
+						}
+
+						if (token["codec_type"].Value<string>().Equals("video", StringComparison.OrdinalIgnoreCase))
+						{
+							VideoStream stream = ParseVideoStream(token);
+							movieInfo.VideoStreams.Add(stream);
+						}
+						else if (token["codec_type"].Value<string>().Equals("audio", StringComparison.OrdinalIgnoreCase))
+						{
+							AudioStream stream = ParseAudioStream(token);
+							movieInfo.AudioStreams.Add(stream);
+						}
+						else if (token["codec_type"].Value<string>().Equals("subtitle", StringComparison.OrdinalIgnoreCase))
+						{
+							SubtitleStream stream = ParseSubtitleStream(token);
+							movieInfo.SubtitleStreams.Add(stream);
+						}
+						else
+						{
+							Console.WriteLine("ERROR: Unknown StreamType found: " + token["codec_type"].Value<string>());
+						}
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine("ERROR: Unhandled Exception in processing stream");
+						Console.WriteLine(ex.Message);
+						Console.WriteLine(ex.Source);
+						Console.WriteLine(ex.StackTrace);
+					}
 				}
 			}
 
-			foreach (JToken token in movieObject["chapters"])
+			if (movieObject["chapters"] == null)
 			{
-				Chapter chapter = ParseChapter(token);
-				movieInfo.Chapters.Add(chapter);
+				Console.WriteLine("ERROR: No chapters found because collection is null");
+			}
+			else
+			{
+				foreach (JToken token in movieObject["chapters"])
+				{
+					try
+					{
+						if (token == null)
+						{
+							Console.WriteLine("ERROR: Chapter skipped because its null");
+							continue;
+						}
+
+						Chapter chapter = ParseChapter(token);
+						movieInfo.Chapters.Add(chapter);
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine("ERROR: Unhandled Exception in processing chapters");
+						Console.WriteLine(ex.Message);
+						Console.WriteLine(ex.Source);
+						Console.WriteLine(ex.StackTrace);
+					}
+				}
 			}
 
 			return movieInfo;
 		}
 
 
-		private string GetChapterTitle(JToken token)
-		{
-			string chapterTitle = "";
-
-			if (token["tags"]["title"] != null)
-			{
-				chapterTitle = token["tags"]["title"].Value<string>();
-			}
-
-			return chapterTitle;
-		}
+		
 
 
 		private VideoStream ParseVideoStream(JToken token)
 		{
-			VideoStream stream = new VideoStream(ParseBaseStream(token))
-			{
-				Width = token["width"].Value<int>(),
-				Height = token["height"].Value<int>(),
-				CodedWidth = token["coded_width"].Value<int>(),
-				CodedHeight = token["coded_height"].Value<int>(),
-				HasBFrames = token["has_b_frames"].Value<bool>(),
-				RealFrameRate = ParseRational(token["r_frame_rate"].Value<string>()),
-				AverageFrameRate = ParseRational(token["avg_frame_rate"].Value<string>()),
-				PixFmt = token["pix_fmt"].Value<string>(),
-				ChromaLocation = (TwoDimensionalOrientation) Enum.Parse(typeof(TwoDimensionalOrientation),
-					token["chroma_location"].Value<string>(), true),
-				Level = token["level"].Value<int>(),
-				FieldOrder = token["field_order"].Value<string>(),
-				Refs = token["refs"].Value<int>(),
-				IsAvc = token["is_avc"].Value<bool>(),
-				NalLengthSize = token["nal_length_size"].Value<int>(),
-				SampleAspectRatio = ParseRatio(token["sample_aspect_ratio"].Value<string>()),
-				DisplayAspectRatio = ParseRatio(token["display_aspect_ratio"].Value<string>()),
-				Profile = token["profile"].Value<string>(),
-				BitsPerRawSample = token["bits_per_raw_sample"].Value<int>()
-			};
+			VideoStream stream = new VideoStream(ParseBaseStream(token));
+			stream.Width = token["width"].Value<int?>() ?? -1;
+			stream.Height = token["height"].Value<int?>() ?? -1;
+			stream.CodedWidth = token["coded_width"].Value<int?>() ?? -1;
+			stream.CodedHeight = token["coded_height"].Value<int?>() ?? -1;
+			stream.HasBFrames = token["has_b_frames"].Value<bool?>() ?? false;
+			stream.RealFrameRate = ParseRational(token["r_frame_rate"].Value<string>());
+			stream.AverageFrameRate = ParseRational(token["avg_frame_rate"].Value<string>());
+			stream.PixFmt = token["pix_fmt"].Value<string>();
+			stream.ChromaLocation = token["chroma_location"].Value<string>() == null ? TwoDimensionalOrientation.None : (TwoDimensionalOrientation) Enum.Parse(typeof(TwoDimensionalOrientation),
+				token["chroma_location"].Value<string>(), true);
+			stream.Level = token["level"].Value<int?>() ?? -1;
+			stream.FieldOrder = token["field_order"].Value<string>();
+			stream.Refs = token["refs"].Value<int?>() ?? -1;
+			stream.IsAvc = token["is_avc"].Value<bool?>() ?? false;
+			stream.NalLengthSize = token["nal_length_size"].Value<int?>() ?? -1;
+			stream.SampleAspectRatio = ParseRatio(token["sample_aspect_ratio"].Value<string>());
+			stream.DisplayAspectRatio = ParseRatio(token["display_aspect_ratio"].Value<string>());
+			stream.Profile = token["profile"].Value<string>();
+			stream.BitsPerRawSample = token["bits_per_raw_sample"].Value<int?>() ?? -1;
 
 			return stream;
 		}
@@ -121,16 +156,13 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 
 		private AudioStream ParseAudioStream(JToken token)
 		{
-			AudioStream stream = new AudioStream(ParseBaseStream(token))
-			{
-				Channels = token["channels"].Value<int>(),
-				ChannelLayout = token["channel_layout"].Value<string>(),
-				SampleFmt = token["sample_fmt"].Value<string>(),
-				// TODO Generate Object for it
-				SampleRate = token["sample_rate"].Value<int>(),
-				Profile = token["profile"].Value<string>(),
-				BitsPerRawSample = token["bits_per_raw_sample"].Value<int>()
-			};
+			AudioStream stream = new AudioStream(ParseBaseStream(token));
+			stream.Channels = token["channels"].Value<int?>() ?? -1;
+			stream.ChannelLayout = token["channel_layout"].Value<string>();
+			stream.SampleFmt = token["sample_fmt"].Value<string>();
+			stream.SampleRate = token["sample_rate"].Value<int?>() ?? -1;
+			stream.Profile = token["profile"].Value<string>();
+			stream.BitsPerSample = token["bits_per_raw_sample"].Value<int?>() ?? -1;
 
 			return stream;
 		}
@@ -141,7 +173,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 				new SubtitleStream(ParseBaseStream(token))
 				{
 					Duration = ParseTimeSpan(token["duration"].Value<string>()),
-					DurationTs = token["duration_ts"].Value<int>()
+					DurationTs = token["duration_ts"].Value<int?>() ?? -1
 				};
 
 			return stream;
@@ -152,86 +184,118 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 			BaseStream stream = new BaseStream
 			{
 				TimeBase = token["time_base"].Value<string>(),
-				Index = token["index"].Value<int>(),
-				StartPts = token["start_pts"].Value<int>(),
+				Index = token["index"].Value<int?>() ?? -1,
+				StartPts = token["start_pts"].Value<int?>() ?? -1,
 				StartTime = TimeSpan.Parse(token["start_time"].Value<string>()),
-				Language = token["tags"]["language"].Value<string>(),
-				Title = token["tags"]["title"].Value<string>()
+				Language = GetItemFromTags(token, "language"),
+				Title = GetItemFromTags(token, "title")
 			};
 
-			Codec codec = new Codec
+			try
 			{
-				Name = token["codec_name"].Value<string>(),
-				NameLong = token["codec_long_name"].Value<string>(),
-				Tag = token["codec_tag"].Value<string>(),
-				TagString = token["codec_tag_string"].Value<string>(),
-				TimeBase = token["codec_time_base"].Value<string>(),
-				Type = (StreamType) Enum.Parse(typeof(StreamType), token["codec_type"].Value<string>(), true)
-			};
-			stream.Codec = codec;
+				Codec codec = new Codec
+				{
+					Name = token["codec_name"].Value<string>(),
+					NameLong = token["codec_long_name"].Value<string>(),
+					Tag = token["codec_tag"].Value<string>(),
+					TagString = token["codec_tag_string"].Value<string>(),
+					TimeBase = token["codec_time_base"].Value<string>(),
+					//Type = token["codec_type"].Value<string>() == null ? StreamType.None : (StreamType)Enum.Parse(typeof(StreamType), token["codec_type"].Value<string>(), true)
+				};
+				stream.Codec = codec;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("ERROR: Unhandled Exception in processing BaseStream.Codec");
+				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Source);
+				Console.WriteLine(ex.StackTrace);
+			}
 
-			Disposition disposition = new Disposition
+			try
 			{
-				Defaut = token["disposition"]["default"].Value<int>(),
-				Dub = token["disposition"]["dub"].Value<int>(),
-				Original = token["disposition"]["original"].Value<int>(),
-				Comment = token["disposition"]["comment"].Value<int>(),
-				Lyrics = token["disposition"]["lyrics"].Value<int>(),
-				Karaoke = token["disposition"]["karaoke"].Value<int>(),
-				Forced = token["disposition"]["forced"].Value<int>(),
-				HearingImpaired = token["disposition"]["hearing_impaired"].Value<int>(),
-				VisualImpaired = token["disposition"]["visual_impaired"].Value<int>(),
-				CleanEffects = token["disposition"]["clean_effects"].Value<int>(),
-				AttachedPicture = token["disposition"]["attached_pic"].Value<int>(),
-				TimedThumbnails = token["disposition"]["timed_thumbnails"].Value<int>()
-			};
-			stream.Disposition = disposition;
+				Disposition disposition = new Disposition();
+				disposition.Default = token["disposition"]["default"].Value<int?>() ?? -1;
+				disposition.Dub = token["disposition"]["dub"].Value<int?>() ?? -1;
+				disposition.Original = token["disposition"]["original"].Value<int?>() ?? -1;
+				disposition.Comment = token["disposition"]["comment"].Value<int?>() ?? -1;
+				disposition.Lyrics = token["disposition"]["lyrics"].Value<int?>() ?? -1;
+				disposition.Karaoke = token["disposition"]["karaoke"].Value<int?>() ?? -1;
+				disposition.Forced = token["disposition"]["forced"].Value<int?>() ?? -1;
+				disposition.HearingImpaired = token["disposition"]["hearing_impaired"].Value<int?>() ?? -1;
+				disposition.VisualImpaired = token["disposition"]["visual_impaired"].Value<int?>() ?? -1;
+				disposition.CleanEffects = token["disposition"]["clean_effects"].Value<int?>() ?? -1;
+				disposition.AttachedPicture = token["disposition"]["attached_pic"].Value<int?>() ?? -1;
+				disposition.TimedThumbnails = token["disposition"]["timed_thumbnails"].Value<int?>() ?? -1;
+				//stream.Disposition = disposition;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("ERROR: Unhandled Exception in processing BaseStream.Disposition");
+				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Source);
+				Console.WriteLine(ex.StackTrace);
+			}
 
-			Tag tag = new Tag();
-			TagLanguage tagLanguage = new TagLanguage
+			if (token.SelectToken("tags") != null)
 			{
-				Bps = token["tags"]["BPS"].Value<string>(),
-				Duration = ParseTimeSpan(token["tags"]["DURATION"].Value<string>()),
-				NumberOfBytes = token["tags"]["NUMBER_OF_BYTES"].Value<long>(),
-				NumberOfFrames = token["tags"]["NUMBER_OF_FRAMES"].Value<int>(),
-				StatisticsTags = token["tags"]["_STATISTICS_TAGS"].Value<string>().Split(' ').ToList(),
-				StatisticsWritingApp = token["tags"]["_STATISTICS_WRITING_APP"].Value<string>(),
-				StatisticsWritingUtc = token["tags"]["_STATISTICS_WRITING_DATE_UTC"].Value<DateTime>()
-			};
-			tag.Tags = tagLanguage;
+				stream.Tags = token["tags"].ToObject<Dictionary<string, string>>();
+			}
 
-			TagLanguage tagLanguageEng = new TagLanguage
-			{
-				Bps = token["tags"]["BPS-eng"].Value<string>(),
-				Duration = ParseTimeSpan(token["tags"]["DURATION-eng"].Value<string>()),
-				NumberOfBytes = token["tags"]["NUMBER_OF_BYTES-eng"].Value<long>(),
-				NumberOfFrames = token["tags"]["NUMBER_OF_FRAMES-eng"].Value<int>(),
-				StatisticsTags = token["tags"]["_STATISTICS_TAGS-eng"].Value<string>().Split(' ').ToList(),
-				StatisticsWritingApp = token["tags"]["_STATISTICS_WRITING_APP-eng"].Value<string>(),
-				StatisticsWritingUtc = token["tags"]["_STATISTICS_WRITING_DATE_UTC-eng"].Value<DateTime>()
-			};
-			tag.TagsEng = tagLanguageEng;
-			stream.Tag = tag;
+			//Tag tag = new Tag();
+			//TagLanguage tagLanguage = new TagLanguage();
+			//tagLanguage.Bps = GetItemFromTags(token, "BPS");
+			//tagLanguage.Duration = ParseTimeSpan(GetItemFromTags(token, "DURATION"));
+			//tagLanguage.NumberOfBytes = token["tags"]["NUMBER_OF_BYTES"].Value<long?>() ?? -1;
+			//tagLanguage.NumberOfFrames = token["tags"]["NUMBER_OF_FRAMES"].Value<int?>() ?? -1;
+			//tagLanguage.StatisticsTags = GetItemFromTags(token, "_STATISTICS_TAGS").Split(' ').ToList();
+			//tagLanguage.StatisticsWritingApp = GetItemFromTags(token, "_STATISTICS_WRITING_APP");
+			//tagLanguage.StatisticsWritingUtc = token["tags"]["_STATISTICS_WRITING_DATE_UTC"].Value<DateTime?>();
+			//tag.Tags = tagLanguage;
+
+			//TagLanguage tagLanguageEng = new TagLanguage();
+			//tagLanguageEng.Bps = GetItemFromTags(token, "BPS-eng");
+			//tagLanguageEng.Duration = ParseTimeSpan(GetItemFromTags(token, "DURATION-eng"));
+			//tagLanguageEng.NumberOfBytes = token["tags"]["NUMBER_OF_BYTES-eng"].Value<long?>() ?? -1;
+			//tagLanguageEng.NumberOfFrames = token["tags"]["NUMBER_OF_FRAMES-eng"].Value<int?>() ?? -1;
+			//tagLanguageEng.StatisticsTags = GetItemFromTags(token, "_STATISTICS_TAGS-eng").Split(' ').ToList();
+			//tagLanguageEng.StatisticsWritingApp = GetItemFromTags(token, "_STATISTICS_WRITING_APP-eng");
+			//tagLanguageEng.StatisticsWritingUtc = token["tags"]["_STATISTICS_WRITING_DATE_UTC-eng"].Value<DateTime?>();
+			//tag.TagsEng = tagLanguageEng;
+			//stream.Tag = tag;
 
 			return stream;
 		}
 
 		private Chapter ParseChapter(JToken token)
 		{
-			Chapter chapter = new Chapter
-			{
-				Id = token["id"].Value<int>(),
-				TimeBase = token["time_base"].Value<string>(),
-				StartTime = ParseTimeSpan(token["start_time"].Value<string>()),
-				EndTime = ParseTimeSpan(token["end_time"].Value<string>()),
-				Start = token["start"].Value<long>(),
-				End = token["end"].Value<long>(),
-				Title = GetChapterTitle(token),
-				Tags = token["tags"].ToObject<Dictionary<string, string>>()
-			};
+			Chapter chapter = new Chapter();
+			chapter.Id = token["id"].Value<int?>() ?? -1;
+			chapter.TimeBase = token["time_base"].Value<string>();
+			chapter.StartTime = ParseTimeSpan(token["start_time"].Value<string>());
+			chapter.EndTime = ParseTimeSpan(token["end_time"].Value<string>());
+			chapter.Start = token["start"].Value<long?>() ?? -1;
+			chapter.End = token["end"].Value<long?>() ?? -1;
+			chapter.Title = GetItemFromTags(token, "title");
+			chapter.Tags = token["tags"].ToObject<Dictionary<string, string>>();
 
 			return chapter;
 		}
+
+
+		private string GetItemFromTags(JToken token, string tag)
+		{
+			string item = "";
+
+			if (token != null && token.SelectToken("tags") != null && token["tags"].SelectToken(tag) != null)
+			{
+				item = token["tags"][tag].Value<string>();
+			}
+
+			return item;
+		}
+
+
 
 		/// <summary>
 		/// Helper needed due to incompatible TimeSpan format in json
@@ -240,6 +304,11 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 		/// <returns></returns>
 		private TimeSpan ParseTimeSpan(string input)
 		{
+			if (input == null || input.Length < 12)
+			{
+				return new TimeSpan();
+			}
+
 			int dotIndex = input.IndexOf(".");
 			if (input.Substring(dotIndex).Length > 7)
 			{
@@ -258,7 +327,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 		{
 			Ratio ratio = new Ratio(-1, -1);
 
-			if (input.Contains(":") && input.Length >= 3)
+			if (input != null && input.Contains(":") && input.Length >= 3)
 			{
 				string left = input.Substring(0, input.IndexOf(":"));
 				string right = input.Substring(input.IndexOf(":") + 1);
@@ -277,7 +346,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Helper
 		{
 			Rational rational = new Rational(-1, -1);
 
-			if (input.Contains("/") && input.Length >= 3)
+			if (input != null && input.Contains("/") && input.Length >= 3)
 			{
 				string left = input.Substring(0, input.IndexOf(":"));
 				string right = input.Substring(input.IndexOf(":") + 1);

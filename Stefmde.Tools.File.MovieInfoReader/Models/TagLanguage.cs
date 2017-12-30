@@ -35,7 +35,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 		public int NumberOfFrames { get; internal set; }
 		public long NumberOfBytes { get; internal set; }
 		public string StatisticsWritingApp { get; internal set; }
-		public DateTime StatisticsWritingUtc { get; internal set; }
+		public DateTime? StatisticsWritingUtc { get; internal set; }
 		public List<string> StatisticsTags { get; internal set; }
 	}
 }

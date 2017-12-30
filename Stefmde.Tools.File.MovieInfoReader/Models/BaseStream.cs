@@ -24,6 +24,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using Stefmde.Tools.File.MovieInfoReader.Models.Enums;
 
 namespace Stefmde.Tools.File.MovieInfoReader.Models
@@ -38,7 +39,7 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 		public string TimeBase { get; internal set; }
 		public int StartPts { get; internal set; }
 		public TimeSpan StartTime { get; internal set; }
-		public Disposition Disposition { get; internal set; }
-		public Tag Tag { get; internal set; }
+		public Dictionary<string, string> Disposition { get; internal set; }
+		public Dictionary<string, string> Tags { get; internal set; }
 	}
 }

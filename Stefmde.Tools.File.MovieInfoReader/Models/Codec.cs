@@ -31,7 +31,6 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 	{
 		public string Name { get; internal set; }
 		public string NameLong { get; internal set; }
-		public StreamType Type { get; internal set; }
 		public string TimeBase { get; internal set; }
 		public string Tag { get; internal set; }
 		public string TagString { get; internal set; }

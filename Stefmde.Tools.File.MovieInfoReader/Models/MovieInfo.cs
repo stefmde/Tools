@@ -37,12 +37,16 @@ namespace Stefmde.Tools.File.MovieInfoReader.Models
 			AudioStreams = new List<AudioStream>();
 			VideoStreams = new List<VideoStream>();
 			SubtitleStreams = new List<SubtitleStream>();
+			DataStreams = new List<DataStream>();
+			AttachmentStreams = new List<AttachmentStream>();
 			Chapters = new List<Chapter>();
 		}
 
 		public List<AudioStream> AudioStreams { get; }
 		public List<VideoStream> VideoStreams { get; }
 		public List<SubtitleStream> SubtitleStreams { get; }
+		public List<DataStream> DataStreams { get; }
+		public List<AttachmentStream> AttachmentStreams { get; }
 		public List<Chapter> Chapters { get; }
 	}
 }
